@@ -1,8 +1,8 @@
 class Config:
     def __init__(self):
-        self.lr = 2e-3
+        self.lr = 2e-4
         self.device = 'cuda:0'
-        self.checkpoint_dir = 'checkpoints/mnist_v1'
+        self.checkpoint_dir = 'checkpoints/mnist_v2'
         self.log_freq = 50
         self.save_freq = 300
         # self.load_path = 'checkpoints/mlp_for_1_identity_slava_wo_validation/weights/latest.pth'

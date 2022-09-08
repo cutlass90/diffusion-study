@@ -1,5 +1,40 @@
-def simple_linear_sceduler(T, diffusion_steps):
-    # T is tensor of shape batch x 1 of type int
-    # returns value that should be multiplied to img
-    x = 1 - T/(diffusion_steps+1)
-    return x
+import numpy as np
+import torch
+import torch.nn.functional as F
+from torch import nn
+
+
+class DDPM(nn.Module):
+    def __init__(self, diffusor, b1=1e-4, b2=0.02, T=1000, criterion=F.mse_loss):
+        super(DDPM, self).__init__()
+        self.diffusor = diffusor
+        self.T = T
+        self.criterion = criterion
+        coeff = get_diffusion_coefficients(b1, b2, T)
+        self.a_ = torch.from_numpy(coeff['a_']).float()
+
+    def forward(self, x0):
+        t = torch.randint(self.T, (x0.size(0),)).to(x0.device)
+        eps = torch.randn_like(x0)
+        pred_eps = self.diffusor(torch.sqrt(self.a_[t][:, None, None, None]).to(x0.device) * x0 +
+                                 torch.sqrt(1 - self.a_[t][:, None, None, None]).to(x0.device) * eps, t.unsqueeze(1).float()/self.T)
+        loss = self.criterion(eps, pred_eps)
+        return loss
+
+
+def get_diffusion_coefficients(b1=1e-4, b2=0.02, T=1000):
+    b = np.linspace(b1, b2, T)
+    a = 1 - b
+    a_ = np.cumprod(a)
+    return {'a_':a_}
+
+if __name__ == "__main__":
+    get_diffusion_coefficients()
+
+    from networks import SimpleAE
+    ae = SimpleAE(1, 32)
+    img = torch.randn(2, 1, 28, 28)
+    t = torch.randn(2)
+
+    ddpm.train_step(img)
+
