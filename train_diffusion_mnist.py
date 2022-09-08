@@ -16,6 +16,7 @@ import os
 
 
 def main():
+    print(opt)
     os.makedirs(os.path.join(opt.checkpoint_dir, 'tf_logs'), exist_ok=True)
     os.makedirs(os.path.join(opt.checkpoint_dir, 'weights'), exist_ok=True)
     writer = SummaryWriter(os.path.join(opt.checkpoint_dir, 'tf_logs'))
@@ -26,6 +27,9 @@ def main():
     dataloader = DataLoader(dataset, batch_size=opt.batch_size, shuffle=True, num_workers=0, drop_last=True)
 
     diffusor = SimpleAE(in_channels=1, filters=opt.filters).to(opt.device)
+    if opt.load_path:
+        diffusor.load_state_dict(torch.load(opt.load_path))
+        print(f'weights were loaded', opt.load_path)
     optim = torch.optim.Adam(diffusor.parameters(), lr=opt.lr)
     step = 0
     for i in range(opt.n_epoch):
@@ -43,6 +47,8 @@ def main():
             if step % opt.log_freq == 0:
                 writer.add_scalar('mse loss', loss.item(), step)
                 print(loss.item())
+            if (step + 1) % opt.save_freq == 0:
+                torch.save(diffusor.state_dict(), os.path.join(opt.checkpoint_dir, 'weights', 'latest.pth'))
 
             step += 1
 
