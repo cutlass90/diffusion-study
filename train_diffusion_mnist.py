@@ -52,7 +52,7 @@ def main():
 
         ddpm.eval()
         samples = ddpm.sample(16, (1, 28, 28))
-        save_image(make_grid(samples, nrow=4), f"{opt.checkpoint_dir}/epoch{i}_sample.png")
+        save_image(make_grid(samples, nrow=4, normalize=True, value_range=(-1, 1)), f"{opt.checkpoint_dir}/epoch{i}_sample.png")
         print()
 
 

@@ -94,7 +94,7 @@ class ResBlock(nn.Module):
         else:
             return z + x
 
-    def forward(self, x, shortcuts=False):
+    def forward(self, x, shortcuts=True):
         z = self.conv1(x)
         z = self.bn1(z)
         z = self.relu1(z)
@@ -133,7 +133,7 @@ class UpBlock(nn.Sequential):
 
 
 class SimpleAE(nn.Module):
-    def __init__(self, in_channels, filters, n_res_blocks=4, d_latent=64):
+    def __init__(self, in_channels, filters, n_res_blocks=8, d_latent=64):
         super().__init__()
         self.n_res_blocks = n_res_blocks
         self.d_latent = d_latent
