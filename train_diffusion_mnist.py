@@ -50,6 +50,11 @@ def main():
 
             step += 1
 
+        ddpm.eval()
+        samples = ddpm.sample(16, (1, 28, 28))
+        save_image(make_grid(samples, nrow=4), f"{opt.checkpoint_dir}/epoch{i}_sample.png")
+        print()
+
 
 
 
