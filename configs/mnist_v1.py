@@ -5,7 +5,7 @@ class Config:
         self.checkpoint_dir = 'checkpoints/mnist_v3'
         self.log_freq = 50
         self.save_freq = 1000
-        # self.load_path = 'checkpoints/mnist_v2/weights/latest.pth'
+        # self.load_path = 'checkpoints/mnist_v3/weights/latest.pth'
         self.load_path = ''
         self.batch_size = 128
         self.filters = 128
